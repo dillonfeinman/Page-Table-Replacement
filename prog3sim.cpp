@@ -27,13 +27,15 @@ void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
 //Simulate OPT
 vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 {
-	float hit = 0;
+	int miss = 0;
+	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			miss++;
 			vector<int> track;
 			for(int j = 0; j < softCache[0].size(); j++)
 			{
@@ -67,19 +69,22 @@ vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 			softCache[0][maxIn] = input[i];
 		}
 	}
-	return hit;
+	float rate = hit / (hit+miss);
+	return rate;
 }
 
 //Simulate LRU
 vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 {
-	float hit = 0;
+	int miss = 0;
+	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			mist++;
 			for(int j = 0; j < softCache[1].size(); j++)
 			{
 				if(softCache[1][j]==0)
@@ -90,13 +95,15 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 			}
 		}
 	}
-	return hit;
+	float rate = hit / (hit+miss);
+	return rate;
 }
 
 //Simulate FIFO
 vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 {
-	float hit = 0;
+	int miss = 0;
+	int hit = 0;
 	//Just in case any of the inputs are 0 which would hit in the cache
 	vector<int> cache_queue;
 	for(int j = 0; j < softCache[0].size(); j++)
@@ -109,6 +116,7 @@ vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			miss++;
 			for(int j = 0; j < softCache[1].size(); j++)
 			{
 				if(softCache[0][j]==cache_queue[0])
@@ -119,30 +127,35 @@ vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 			}
 		}
 	}
-	return hit;
+	float rate = hit / (hit+miss);
+	return rate;
 }
 
 //Simulate RAND
 vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
 {
-	float hit = 0;
+	int miss = 0;
+	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			miss++;
 			int index = rand() % softCache[0].size();
 			softCache[0][index] = input[i];
 		}
 	}
-	return hit;
+	float rate = hit / (hit+miss);
+	return rate;
 }
 
 //Simulate CLOCK
 vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 {
-	float hit = 0;
+	int miss = 0;
+	int hit = 0;
 	//Reset LRU values to 1;
 	for(int j = 0; j < softCache[1].size(); j++)
 	{
@@ -154,6 +167,7 @@ vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			miss++;
 			bool open = false;
 			for(int j = 0; j < softCache[1].size(); j++)
 			{
@@ -186,7 +200,8 @@ vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 			}
 		}
 	}
-	return hit;
+	float rate = hit / (hit+miss);
+	return rate;
 }
 
 //Simulate the generated cache and access with each type of replacement
@@ -229,34 +244,37 @@ int main(int argc, char * argv[]){
 		cerr << "Error. Needs 3 arguments." << endl;
 		exit(1);
 	} else {
-		int hit = 0;
-		int cache_hit = 0;
-		int cache_miss = 0;
-		int num_pages = stoi(argv[1]);
-		int num_accesses = stoi(argv[2]);		
-		vector<int> pages;
-		vector<int> access;
-		//int counter = 0;
-		for(int num = 5; num <= 100; num = num + 5){
-			access = generate(num_accesses, num); //Need to generate all 3 wordflows
-			//vector<int> cache(num, -1);
-			//for(int i = 0; i < access.size(); i++){ 	
-			//	for(int j = 0; j < cache.size(); j++){
-			//		if(cache[j] == -1){
-			//			cache[j] = access[i];
-			//		} else if(access[i] == cache[j]){
-			//			cache_hit++;
-			//			hit = 1;
-			//			break;
-			//		}
-			//	}
-			//	if(hit != 1){
-			//		//cache miss
-			//	}
-			//}
+		int accessess = stoi(argv[1]);		
 
-			//Needs to format output and generate input
-			csv = simulator(num, access);
+		//Generate the three workload (No-locality, 80-20, looping)
+		vector<vector<int>> access;
+		vector<int> a0, a1, a2;
+		for(int i = 0; i < accessess; i++)
+		{
+			a0.push_back();
+			a1.push_back();
+			a2.push_back();
 		}
+		access.push_back(a0);
+		access.push_back(a1);
+		access.push_back(a2);
+	
+		//Output csv to file
+		ofstream output("data.csv");
+		output << "#cache,OPT,LRU,FIFO,RAND, CLOCK" << endl;
+		
+		for(int j = 0; j < access.size(); j++)	//Loop through all workloads
+		{
+			output << "\n\n--------\nWorkload: " << j << "\n-----------\n\n;
+			for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
+			{
+				//Simulate cache replacements and generate csv
+				vector<float> toCSV;
+				toCSV.push_back(simulator(num, access[j]));
+				output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			}
+		}
+		output.close();
 	}
+	return 0;
 }
