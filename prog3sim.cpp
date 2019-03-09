@@ -14,10 +14,10 @@ void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
 		{
 			*in = true;
 			*hit++;
-			softCache[1][j] = //Needs val to be set
+			softCache[1][j] = softcache[1].size()-1;
 			break;
 		} else {
-			
+			softCache[1][j]-=1;
 		}
 	}
 }
@@ -27,7 +27,7 @@ void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
 vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
-	for(int i = 0; i < input.size(); i ++)
+	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
