@@ -1,21 +1,14 @@
-CFLAGS = -Wall
-P = prog1sorter
-O = prog1generator
+CFLAGS = -Wall -g -Wextra -DDebug
+P = prog3sim
 
-all: $(P)
+all: prog3sim.o 
+	gcc -g prog3sim.o -o prog3sim
 
-sort: $(P)
-	$(P): $(P).o
-		gcc $(CFLAGS) $(P).o -o $(P)
-	$(P).o: $(P).c
-		gcc $(CFLAGS) -c $(P).c -o $(P).o
-gen: $(O)
-	$(O): $(O).o
-		gcc $(CFLAGS) $(O).o -o $(O)
-	$(O).o: $(O).c
-		gcc $(CFLAGS) -c $(O).c -o $(O).o
+prog3sim.o:
+	gcc -c prog3sim.cpp
+
 clean:
-	rm -rf *.o $(P) $(O)
+	rm -rf *.o $(P)
 run: all
 	./$(P)
 checkmem: all
