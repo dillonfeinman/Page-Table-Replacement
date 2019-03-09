@@ -1,13 +1,13 @@
-#include "prog1generator.c"
 #include <vector>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
 //Checking cache helper function
-void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
+void checkCache(vector<vector<int>> softCache, int input, bool *in, int *hit)
 {
 	for(int j = 0; j < softCache[0].size(); j++) //Check cache
 	{
@@ -15,7 +15,7 @@ void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
 		{
 			*in = true;
 			*hit++;
-			softCache[1][j] = softcache[1].size()-1;
+			softCache[1][j] = softCache[1].size()-1;
 			break;
 		} else {
 			softCache[1][j]-=1;
@@ -25,14 +25,14 @@ void checkCache(vector<vector<int>> softCache, int input, bool *in, float *hit)
 
 
 //Simulate OPT
-vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
+float simOPT(vector<vector<int>> softCache, vector<int> input)
 {
 	int miss = 0;
 	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
-		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
+		checkCache(softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 			miss++;
@@ -74,23 +74,23 @@ vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate LRU
-vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
+float simLRU(vector<vector<int>> softCache, vector<int> input)
 {
 	int miss = 0;
 	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
-		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
+		checkCache(softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
-			mist++;
+			miss++;
 			for(int j = 0; j < softCache[1].size(); j++)
 			{
 				if(softCache[1][j]==0)
 				{
 					softCache[0][j] = input[i];
-					softCache[1][j] = softcache[1].size()-1;
+					softCache[1][j] = softCache[1].size()-1;
 				}
 			}
 		}
@@ -100,7 +100,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate FIFO
-vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
+float simFIFO(vector<vector<int>> softCache, vector<int> input)
 {
 	int miss = 0;
 	int hit = 0;
@@ -113,7 +113,7 @@ vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
-		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
+		checkCache(softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 			miss++;
@@ -132,14 +132,14 @@ vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate RAND
-vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
+float simRAND(vector<vector<int>> softCache, vector<int> input)
 {
 	int miss = 0;
 	int hit = 0;
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
-		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
+		checkCache(softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 			miss++;
@@ -152,7 +152,7 @@ vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate CLOCK
-vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
+float simCLOCK(vector<vector<int>> softCache, vector<int> input)
 {
 	int miss = 0;
 	int hit = 0;
@@ -164,7 +164,7 @@ vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
-		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
+		checkCache(softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 			miss++;
@@ -209,7 +209,7 @@ vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 vector<float> simulator(int cacheSize,vector<int> input)
 {
 	vector<float> retVal;
-	reVatl.push_back( (float) cacheSize ); //X Value
+	retVal.push_back( (float) cacheSize ); //X Value
 
 	//Format the cache for replacement
 	vector<vector<int>> softCache;
@@ -230,15 +230,6 @@ vector<float> simulator(int cacheSize,vector<int> input)
 	return retVal;
 }
 
-vector<int> generate(int num, int cachesize){
-	vector<int> random;
-	srand(time(0));
-	for(int i = 0; i < num; i++){
-		random[i] = (rand() % (cachesize);
-	}
-	return random;
-}
-
 int main(int argc, char * argv[]){
 	if(argc != 2){
 		cerr << "Error. Needs 2 arguments." << endl;
@@ -247,8 +238,8 @@ int main(int argc, char * argv[]){
 		int accessess = stoi(argv[1]);		
 	
 		//Output csv to file --> No locality
-		ofstream output("no_locality.csv");
-		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+		ofstream output0("no_locality.csv");
+		output0 << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
 		
 		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
 		{
@@ -261,15 +252,15 @@ int main(int argc, char * argv[]){
 
 			//Simulate cache replacements and generate csv
 			vector<float> toCSV;
-			toCSV.push_back(simulator(num, access[j]));
-			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			toCSV = simulator(num, access);
+			output0 << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
 			
 		}
-		output.close();
+		output0.close();
 
 		//Output csv to file --> 80-20
-		ofstream output("80-20.csv");
-		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+		ofstream output1("80-20.csv");
+		output1 << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
 		
 		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
 		{
@@ -282,15 +273,15 @@ int main(int argc, char * argv[]){
 
 			//Simulate cache replacements and generate csv
 			vector<float> toCSV;
-			toCSV.push_back(simulator(num, access[j]));
-			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			toCSV = simulator(num, access);
+			output1 << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
 			
 		}
-		output.close();
+		output1.close();
 
 		//Output csv to file --> looping
-		ofstream output("looping.csv");
-		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+		ofstream output2("looping.csv");
+		output2 << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
 		
 		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
 		{
@@ -303,11 +294,11 @@ int main(int argc, char * argv[]){
 
 			//Simulate cache replacements and generate csv
 			vector<float> toCSV;
-			toCSV.push_back(simulator(num, access[j]));
-			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			toCSV = simulator(num, access);
+			output2 << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
 			
 		}
-		output.close();
+		output2.close();
 	}
 	return 0;
 }

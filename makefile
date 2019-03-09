@@ -2,10 +2,10 @@ CFLAGS = -Wall -g -Wextra -DDebug
 P = prog3sim
 
 all: prog3sim.o 
-	gcc -g prog3sim.o -o prog3sim
+	g++ -g prog3sim.o -o prog3sim
 
 prog3sim.o:
-	gcc -c prog3sim.cpp
+	g++ -c prog3sim.cpp
 
 clean:
 	rm -rf *.o $(P)
