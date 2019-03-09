@@ -34,7 +34,37 @@ vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
+			vector<int> track;
+			for(int j = 0; j < softCache[0].size(); j++)
+			{
+				bool found = false;
+				for(int k = 0; k < input.size(); k++) //Find distance to next access
+				{
+					if(input[k]==softCache[0][j])
+					{
+						track.push_back(k);
+						found = true;
+						break;
+					}
+				}
+				if(found) //No more accessess
+				{
+					track.push_back(input.size()+1);
+				}
+			}
 
+			//Find index with the furthest access
+			int maxIn = 0;
+			int max = 0;
+			for(int j = 0; j < track.size(); j++)
+			{
+				if(track[j]>max)
+				{
+					max = track[j];
+					maxIn = j;
+				}
+			}
+			softCache[0][maxIn] = input[i];
 		}
 	}
 	return hit;
@@ -54,7 +84,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 			{
 				if(softCache[1][j]==0)
 				{
-					softCache[0][j] = input;
+					softCache[0][j] = input[i];
 					softCache[1][j] = softcache[1].size()-1;
 				}
 			}
@@ -225,7 +255,7 @@ int main(int argc, char * argv[]){
 			//	}
 			//}
 
-			//Needs something to catch value and inputs
+			//Needs to format output and generate input
 			csv = simulator(num, access);
 		}
 	}
