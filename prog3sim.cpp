@@ -49,14 +49,21 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
-
+			for(int j = 0; j < softCache[1].size(); j++)
+			{
+				if(softCache[1][j]==0)
+				{
+					softCache[0][j] = input;
+					softCache[1][j] = softcache[1].size()-1;
+				}
+			}
 		}
 	}
 	return hit;
 }
 
 //Simulate FIFO
-vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
+vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
 	for(int i = 0; i < input.size(); i++)
@@ -72,7 +79,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate RAND
-vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
+vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
 	for(int i = 0; i < input.size(); i++)
@@ -88,7 +95,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 }
 
 //Simulate CLOCK
-vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
+vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
 	for(int i = 0; i < input.size(); i++)
