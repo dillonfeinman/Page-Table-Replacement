@@ -113,13 +113,47 @@ vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
 vector<float> simCLOCK(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
+	//Reset LRU values to 1;
+	for(int j = 0; j < softCache[1].size(); j++)
+	{
+		softCache[1][j]=1;
+	}
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
-
+			bool open = false;
+			for(int j = 0; j < softCache[1].size(); j++)
+			{
+				if(softCache[1][j]==0)
+				{
+					softCache[0][j]=input[i];
+					softCache[1][j]=1;
+					open = true;
+				}
+			}
+			if(!open)
+			{
+				for(int j = 0; j < softCache[1].size(); j++)
+				{
+					softCache[1][j]=0;
+				}
+				softCache[0][0]=input[i];
+				softCache[1][0]=1;
+			}
+		}
+		else
+		{
+			//Hits already tracked by helper function simply overriding its output
+			for(int j = 0; j < softCache[1].size(); j++)
+			{
+				if(softCache[0][j]==input[i])
+				{
+					softCache[1][j]=1;
+				}
+			}
 		}
 	}
 	return hit;
