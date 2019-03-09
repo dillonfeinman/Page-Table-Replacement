@@ -1,5 +1,6 @@
 #include "prog1generator.c"
 #include <vector>
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 
@@ -66,13 +67,26 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 vector<float> simFIFO(vector<vector<int>> softCache, vector<int> input)
 {
 	float hit = 0;
+	//Just in case any of the inputs are 0 which would hit in the cache
+	vector<int> cache_queue;
+	for(int j = 0; j < softCache[0].size(); j++)
+	{
+		cache_queue.push_back(input[j]);
+	}
 	for(int i = 0; i < input.size(); i++)
 	{
 		bool inCache = false;
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
-
+			for(int j = 0; j < softCache[1].size(); j++)
+			{
+				if(softCache[0][j]==cache_queue[0])
+				{
+					softCache[0][j] = input[i];
+					cache_queue.push_back(input[i]);
+				}
+			}
 		}
 	}
 	return hit;
@@ -88,7 +102,8 @@ vector<float> simRAND(vector<vector<int>> softCache, vector<int> input)
 		checkCache(vector<vector<int>> softCache, input[i], &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
-
+			int index = rand() % softCache[0].size();
+			softCache[0][index] = input[i];
 		}
 	}
 	return hit;
