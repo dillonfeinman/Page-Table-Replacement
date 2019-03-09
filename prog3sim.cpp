@@ -240,39 +240,72 @@ vector<int> generate(int num, int cachesize){
 }
 
 int main(int argc, char * argv[]){
-	if(argc != 3){
-		cerr << "Error. Needs 3 arguments." << endl;
+	if(argc != 2){
+		cerr << "Error. Needs 2 arguments." << endl;
 		exit(1);
 	} else {
 		int accessess = stoi(argv[1]);		
-
-		//Generate the three workload (No-locality, 80-20, looping)
-		vector<vector<int>> access;
-		vector<int> a0, a1, a2;
-		for(int i = 0; i < accessess; i++)
-		{
-			a0.push_back();
-			a1.push_back();
-			a2.push_back();
-		}
-		access.push_back(a0);
-		access.push_back(a1);
-		access.push_back(a2);
 	
-		//Output csv to file
-		ofstream output("data.csv");
-		output << "#cache,OPT,LRU,FIFO,RAND, CLOCK" << endl;
+		//Output csv to file --> No locality
+		ofstream output("no_locality.csv");
+		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
 		
-		for(int j = 0; j < access.size(); j++)	//Loop through all workloads
+		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
 		{
-			output << "\n\n--------\nWorkload: " << j << "\n-----------\n\n;
-			for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
+			//Generate access
+			vector<int> access;
+			for(int i = 0; i < accessess; i++)
 			{
-				//Simulate cache replacements and generate csv
-				vector<float> toCSV;
-				toCSV.push_back(simulator(num, access[j]));
-				output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+				access.push_back(rand()%num); //No-locality
 			}
+
+			//Simulate cache replacements and generate csv
+			vector<float> toCSV;
+			toCSV.push_back(simulator(num, access[j]));
+			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			
+		}
+		output.close();
+
+		//Output csv to file --> 80-20
+		ofstream output("80-20.csv");
+		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+		
+		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
+		{
+			//Generate access
+			vector<int> access;
+			for(int i = 0; i < accessess; i++)
+			{
+				access.push_back(rand()%num); //80-20 --> Just for testing need to generate later
+			}
+
+			//Simulate cache replacements and generate csv
+			vector<float> toCSV;
+			toCSV.push_back(simulator(num, access[j]));
+			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			
+		}
+		output.close();
+
+		//Output csv to file --> looping
+		ofstream output("looping.csv");
+		output << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+		
+		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
+		{
+			//Generate access
+			vector<int> access;
+			for(int i = 0; i < accessess; i++)
+			{
+				access.push_back(rand()%num); //Looping --> Just for testing need to generate later
+			}
+
+			//Simulate cache replacements and generate csv
+			vector<float> toCSV;
+			toCSV.push_back(simulator(num, access[j]));
+			output << num << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			
 		}
 		output.close();
 	}
