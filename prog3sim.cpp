@@ -5,6 +5,22 @@
 
 using namespace std;
 
+//Checking cache helper function
+void checkCache(vector<vector<int>> softCache, vector<int> input, bool *in, float *hit)
+{
+	for(int j = 0; j < softCache[0].size(); j++) //Check cache
+	{
+		if(softCache[0][j]==input[i]) //In cache
+		{
+			*in = true;
+			*hit++;
+			softCache[1][j] = //Needs val to be set
+			break;
+		}
+	}
+}
+
+
 //Simulate OPT
 vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 {
@@ -12,15 +28,7 @@ vector<float> simOPT(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size())
 	{
 		bool inCache = false;
-		for(int j = 0; j < softCache[0].size(); j++) //Check cache
-		{
-			if(softCache[0][j]==input[i]) //In cache
-			{
-				inCache = true;
-				hit++;
-				break;
-			}
-		}
+		checkCache(vector<vector<int>> softCache, vector<int> input, &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 
@@ -36,15 +44,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size())
 	{
 		bool inCache = false;
-		for(int j = 0; j < softCache[0].size(); j++) //Check cache
-		{
-			if(softCache[0][j]==input[i]) //In cache
-			{
-				inCache = true;
-				hit++;
-				break;
-			}
-		}
+		checkCache(vector<vector<int>> softCache, vector<int> input, &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 
@@ -60,15 +60,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size())
 	{
 		bool inCache = false;
-		for(int j = 0; j < softCache[0].size(); j++) //Check cache
-		{
-			if(softCache[0][j]==input[i]) //In cache
-			{
-				inCache = true;
-				hit++;
-				break;
-			}
-		}
+		checkCache(vector<vector<int>> softCache, vector<int> input, &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 
@@ -84,15 +76,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size())
 	{
 		bool inCache = false;
-		for(int j = 0; j < softCache[0].size(); j++) //Check cache
-		{
-			if(softCache[0][j]==input[i]) //In cache
-			{
-				inCache = true;
-				hit++;
-				break;
-			}
-		}
+		checkCache(vector<vector<int>> softCache, vector<int> input, &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 
@@ -108,15 +92,7 @@ vector<float> simLRU(vector<vector<int>> softCache, vector<int> input)
 	for(int i = 0; i < input.size())
 	{
 		bool inCache = false;
-		for(int j = 0; j < softCache[0].size(); j++) //Check cache
-		{
-			if(softCache[0][j]==input[i]) //In cache
-			{
-				inCache = true;
-				hit++;
-				break;
-			}
-		}
+		checkCache(vector<vector<int>> softCache, vector<int> input, &inCache, &hit);
 		if(!inCache) //Not in cache needs replacement
 		{
 
