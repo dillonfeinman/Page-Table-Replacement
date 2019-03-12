@@ -1,14 +1,15 @@
 CFLAGS = -Wall -g -Wextra -DDebug
 P = prog3sim
 
-all: prog3sim.o 
+all: prog3sim
+
+prog3sim: $(P).cpp
+	g++ -c prog3sim.cpp
 	g++ -g prog3sim.o -o prog3sim
 
-prog3sim.o:
-	g++ -c prog3sim.cpp
 
 clean:
-	rm -rf *.o $(P)
+	rm -rf *.o $(P) *.csv
 run: all
 	./$(P)
 checkmem: all
