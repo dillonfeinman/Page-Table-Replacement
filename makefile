@@ -9,7 +9,7 @@ prog3sim: $(P).cpp
 
 
 clean:
-	rm -rf *.o $(P) *.csv
+	rm -rf *.o $(P) *.csv *.png
 run: all
 	./$(P)
 checkmem: all

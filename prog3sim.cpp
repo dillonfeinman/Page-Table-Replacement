@@ -6,7 +6,9 @@
 #include <deque>
 
 using namespace std;
-
+bool cmp(const vector<int>& a, const vector<int>& b) {
+	return a[0] < b[0];
+}
 
 //Simulate OPT
 float simOPT(int num, vector<int> input)
@@ -14,11 +16,10 @@ float simOPT(int num, vector<int> input)
 	int miss = 0;
 	int numHit = 0;
 	deque<int> cache;
-	int dist[num];
-	for(int i = 0; i < num; i++){
-		dist[i] = -1;
-	}
+	vector<int> dist(num, -1);
+	vector<int> reset(num, -1);
 	for(int i = 0; i < input.size(); i++){
+		dist = reset;
 		for(int j = 0; j < num; j++){
 			if(find(cache.begin(), cache.end(), input[i]) != cache.end()){
 				numHit++;
@@ -48,11 +49,11 @@ float simOPT(int num, vector<int> input)
 					}
 				}
 				cache[index] = input[i];
+				break;
 			}
 		}
 	}
-	cout << numHit << ", " << miss << endl;
-
+cout << numHit << ", " << miss << endl;
 	float rate = (float)numHit / (float)(numHit+miss);
 	rate = rate * (float)100;
 	return rate;
@@ -208,16 +209,6 @@ vector<float> simulator(int cacheSize,vector<int> input)
 	vector<float> retVal;
 	retVal.push_back( (float) cacheSize ); //X Value
 
-	//Format the cache for replacement
-	vector<vector<int> > softCache;
-	vector<int> c1, c2;
-	for(int i = 0; i < cacheSize; i++)
-	{
-		c1.push_back(-1);
-	}
-	softCache.push_back(c1);
-	softCache.push_back(c1);
-
 	retVal.push_back(simOPT(cacheSize, input)); //Y value for opt
 	retVal.push_back(simLRU(cacheSize, input)); //Y value for lru
 	retVal.push_back(simFIFO(cacheSize, input)); //Y value for fifo
@@ -243,6 +234,17 @@ int main(int argc, char * argv[]){
 		{
 			//Generate access
 			vector<int> access;
+			// access.push_back(0);
+			// access.push_back(1);
+			// access.push_back(2);
+			// access.push_back(3);
+			// access.push_back(4);
+			// access.push_back(5);
+			// access.push_back(1);
+			// access.push_back(2);
+			// access.push_back(3);
+			// access.push_back(4);
+			// access.push_back(0);
 			for(int i = 0; i < accessess; i++)
 			{
 				access.push_back(rand()%numpages); //No-locality
