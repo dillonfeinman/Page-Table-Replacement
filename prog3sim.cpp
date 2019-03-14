@@ -28,10 +28,11 @@ float simOPT(int num, vector<int> input)
 				break;
 			} else {
 				miss++;
-				for(int k = i; k < input.size(); k++){
-					for(int l = 0; l < cache.size(); l++){
+				for(int l = 0; l < cache.size(); l++){
+					for(int k = i; k < input.size(); k++){
 						if(input[k] == cache[l]){
-							dist[l] = k - i;
+							dist[l] = k;
+							break;
 						}
 					}
 				}
@@ -45,11 +46,20 @@ float simOPT(int num, vector<int> input)
 						max = dist[k];
 						index = k;
 					}
+					//cout <<"DIST: ";
+					// for(auto i : dist)
+						//cout << i << ", ";
+					//cout << endl;
 				}
 				cache[index] = input[i];
 				break;
 			}
 		}
+		//cout << "CACHE: ";
+		// for(auto i : cache)
+			//cout << i << ", ";
+		//cout << endl;
+		//cout << endl;
 	}
   //cout << numHit << ", " << miss << endl;
 	float rate = (float)numHit / (float)(numHit+miss);
