@@ -21,4 +21,4 @@ plots: plot_hit_rates.plt
 	./$(P) 100 10000
 	gnuplot -e "title='No Locality'" -e "input_filename='no_locality.csv'" plot_hit_rates.plt > no_locality.png
 	gnuplot -e "title='80-20'" -e "input_filename='80-20.csv'" plot_hit_rates.plt > 80-20.png
-	gnuplot -e "title='Looping'" -e "input_filename='Looping.csv'" plot_hit_rates.plt > looping.png
+	gnuplot -e "title='Looping'" -e "input_filename='looping.csv'" plot_hit_rates.plt > looping.png

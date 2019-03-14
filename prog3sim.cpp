@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <deque>
-
+#include <algorithm>
 using namespace std;
 
 
