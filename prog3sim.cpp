@@ -85,6 +85,7 @@ float simLRU(int num, vector<int> input) // works
 	//cout << numHit << ", "<< miss << endl;
 	float rate = (float)numHit / (float)(numHit+miss);
 	rate = rate * (float)100;
+	//cout << rate << endl;
 	return rate;
 }
 
@@ -205,20 +206,18 @@ vector<float> simulator(int cacheSize,vector<int> input)
 {
 	vector<float> retVal;
 	retVal.push_back( (float) cacheSize ); //X Value
-	cout << cacheSize << ":" << endl;
+	//cout << cacheSize << ":" << endl;
 	retVal.push_back(simOPT(cacheSize, input)); //Y value for opt
-	cout << "simOPT finished." << endl;
+	//cout << "simOPT finished." << endl;
 	retVal.push_back(simLRU(cacheSize, input)); //Y value for lru
-	cout << "simLRU finished." << endl;
+	//cout << "simLRU finished." << endl;
 	retVal.push_back(simFIFO(cacheSize, input)); //Y value for fifo
-	cout << "simFIFO finished." << endl;
+	//cout << "simFIFO finished." << endl;
 	retVal.push_back(simRAND(cacheSize, input)); //Y value for rand
-	cout << "simRAND finished." << endl;
+	//cout << "simRAND finished." << endl;
 	retVal.push_back(simCLOCK(cacheSize, input)); //Y value for clock
-	cout << "simCLOCK finished." << endl;
-	cout << endl;
-	cout << endl;
-	cout << endl;
+	//cout << "simCLOCK finished." << endl;
+	//cout << endl;
 	return retVal;
 }
 
@@ -261,25 +260,34 @@ int main(int argc, char * argv[]){
 
 		}
 		output0.close();
-/*
+
 		//Output csv to file --> 80-20
 		ofstream output1("80-20.csv");
 		output1 << "#cache,OPT,LRU,FIFO,RAND,CLOCK" << endl;
+
+		vector<int> ints;
+		for(int i = 0; i < numpages; i++){
+			ints.push_back(i);
+		}
 
 		for(int num = 5; num <= 100; num = num + 5) //Loop through all cache size
 		{
 			//Generate access
 			vector<int> access;
+			double twenty = (double)numpages * .2;
 			for(int i = 0; i < accessess; i++)
 			{
-				access.push_back(rand()%num); //80-20 --> Just for testing need to generate later
+				int r = rand() % 1000;
+				if(r < 200){
+					access.push_back(ints[rand()%(numpages-(int)twenty)+(int)twenty]);
+				} else {
+					access.push_back(ints[(rand()%(int(twenty)))]);
+				}
 			}
-
 			//Simulate cache replacements and generate csv
 			vector<float> toCSV;
 			toCSV = simulator(num, access);
-			output1 << num << ", " << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
-
+			output1 << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << ", " << toCSV[5] << endl;
 		}
 		output1.close();
 
@@ -291,19 +299,23 @@ int main(int argc, char * argv[]){
 		{
 			//Generate access
 			vector<int> access;
+			int index = 0;
 			for(int i = 0; i < accessess; i++)
 			{
-				access.push_back(rand()%num); //Looping --> Just for testing need to generate later
+				if(index >= 50){
+					index = 0;
+				}
+				access.push_back(index);
+				index++;
 			}
 
 			//Simulate cache replacements and generate csv
 			vector<float> toCSV;
 			toCSV = simulator(num, access);
-			output2 << num << ", " << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << endl;
+			output2 << toCSV[0] << ", " << toCSV[1] << ", " << toCSV[2] << ", " << toCSV[3] << ", " << toCSV[4] << ", " << toCSV[5] << endl;
 
 		}
 		output2.close();
-		*/
 	}
 
 	return 0;
