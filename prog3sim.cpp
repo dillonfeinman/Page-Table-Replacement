@@ -6,9 +6,7 @@
 #include <deque>
 
 using namespace std;
-bool cmp(const vector<int>& a, const vector<int>& b) {
-	return a[0] < b[0];
-}
+
 
 //Simulate OPT
 float simOPT(int num, vector<int> input)
@@ -53,7 +51,7 @@ float simOPT(int num, vector<int> input)
 			}
 		}
 	}
-cout << numHit << ", " << miss << endl;
+  //cout << numHit << ", " << miss << endl;
 	float rate = (float)numHit / (float)(numHit+miss);
 	rate = rate * (float)100;
 	return rate;
@@ -152,52 +150,51 @@ float simRAND(int num, vector<int> input) //works
 float simCLOCK(int num, vector<int> input)
 {
 	int miss = 0;
-	int hit = 0;
-	// //Reset LRU values to 1;
-	// for(int j = 0; j < softCache[1].size(); j++)
-	// {
-	// 	softCache[1][j]=1;
-	// }
-	// for(int i = 0; i < input.size(); i++)
-	// {
-	// 	bool inCache = false;
-	// 	checkCache(softCache, input[i], inCache, hit);
-	// 	if(!inCache) //Not in cache needs replacement
-	// 	{
-	// 		miss++;
-	// 		bool open = false;
-	// 		for(int j = 0; j < softCache[1].size(); j++)
-	// 		{
-	// 			if(softCache[1][j]==0)
-	// 			{
-	// 				softCache[0][j]=input[i];
-	// 				softCache[1][j]=1;
-	// 				open = true;
-	// 			}
-	// 		}
-	// 		if(!open)
-	// 		{
-	// 			for(int j = 0; j < softCache[1].size(); j++)
-	// 			{
-	// 				softCache[1][j]=0;
-	// 			}
-	// 			softCache[0][0]=input[i];
-	// 			softCache[1][0]=1;
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		//Hits already tracked by helper function simply overriding its output
-	// 		for(int j = 0; j < softCache[1].size(); j++)
-	// 		{
-	// 			if(softCache[0][j]==input[i])
-	// 			{
-	// 				softCache[1][j]=1;
-	// 			}
-	// 		}
-	// 	}
-	// }
-	float rate = 1;// hit / (hit+miss);
+	int numHit = 0;
+	vector<int> cache;
+	vector<int> lru;
+	int clockhand = 0;
+	//Reset LRU values to 1;
+	for(int j = 0; j < num; j++)
+	{
+		lru.push_back(0);
+	}
+	clockhand = rand() % num;
+	for(int i = 0; i < input.size(); i++)
+	{
+		for(int j = 0; j < num; j++){
+			if(find(cache.begin(), cache.end(), input[i]) != cache.end()){
+				numHit++;
+				lru[find(cache.begin(), cache.end(), input[i]) - cache.begin()] = 1;
+				break;
+			}	else if(cache.size() < num){
+				miss++;
+				cache.push_back(input[i]);
+				lru[cache.size()-1] = 1;
+				break;
+			} else {
+				miss++;
+				if(lru[clockhand] == 0){
+					cache[clockhand] = input[i];
+					lru[clockhand] = 1;
+				} else {
+					while(lru[clockhand] != 0){
+						lru[clockhand] = 0;
+						if(clockhand == num - 1){
+							clockhand = 0;
+						} else {
+							clockhand++;
+						}
+					}
+					cache[clockhand] = input[i];
+					lru[clockhand] = 1;
+				}
+				break;
+			}
+		}
+	}
+	//cout << numHit << ", " << miss << endl;
+	float rate = (float)numHit / (float)(numHit+miss);
 	rate = rate * (float)100;
 	return rate;
 }
@@ -208,12 +205,20 @@ vector<float> simulator(int cacheSize,vector<int> input)
 {
 	vector<float> retVal;
 	retVal.push_back( (float) cacheSize ); //X Value
-
+	cout << cacheSize << ":" << endl;
 	retVal.push_back(simOPT(cacheSize, input)); //Y value for opt
+	cout << "simOPT finished." << endl;
 	retVal.push_back(simLRU(cacheSize, input)); //Y value for lru
+	cout << "simLRU finished." << endl;
 	retVal.push_back(simFIFO(cacheSize, input)); //Y value for fifo
+	cout << "simFIFO finished." << endl;
 	retVal.push_back(simRAND(cacheSize, input)); //Y value for rand
+	cout << "simRAND finished." << endl;
 	retVal.push_back(simCLOCK(cacheSize, input)); //Y value for clock
+	cout << "simCLOCK finished." << endl;
+	cout << endl;
+	cout << endl;
+	cout << endl;
 	return retVal;
 }
 
